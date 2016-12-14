@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 
-require_relative 'sudoku'
+require_relative 'sudoku_solver'
 
 if ARGV.empty?
   puts "Usage: "
@@ -13,4 +13,7 @@ file_name = ARGV.shift
 
 sudoku = Sudoku.from_file(file_name)
 
-puts sudoku
+solver = SudokuSolver.new(sudoku)
+solution = solver.solve
+
+puts solution
