@@ -1,0 +1,16 @@
+#!/usr/bin/env ruby
+
+require_relative 'sudoku'
+
+if ARGV.empty?
+  puts "Usage: "
+  puts "\t./solver file_path"
+
+  exit 0
+end
+
+file_name = ARGV.shift
+
+sudoku = Sudoku.from_file(file_name)
+
+puts sudoku
