@@ -19,6 +19,7 @@ class SudokuSolver
         while can_select
           ant_sudoku.update_selected
           ant_sudoku.update_places
+          ant_sudoku.add_digits_with_only_one_posible_position
 
           can_select = false
         end
