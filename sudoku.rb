@@ -22,6 +22,18 @@ class Sudoku
     @selected = 0
   end
 
+  def can_put_any_number?
+    digit_in_one_position = @places.any? do |row|
+      row.any? do
+        |col| col.values.any?{|d| d == 1}
+      end
+    end
+
+    position_with_one_digit = @digits.flatten.include?(1)
+
+    digit_in_one_position || position_with_one_digit
+  end
+
   # Update how many digits can be entered
   # in each position
   def update_digit_amounts_in_positions

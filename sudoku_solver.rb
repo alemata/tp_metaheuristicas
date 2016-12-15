@@ -19,11 +19,17 @@ class SudokuSolver
         while can_select
           ant_sudoku.update_selected
           ant_sudoku.update_places
-          ant_sudoku.add_digits_with_only_one_posible_position
-          ant_sudoku.update_digit_amounts_in_positions
-          ant_sudoku.fill_position_with_only_one_posible_digit
-          require 'pry'; binding.pry
 
+          while ant_sudoku.can_put_any_number?
+            ant_sudoku.add_digits_with_only_one_posible_position
+            ant_sudoku.update_digit_amounts_in_positions
+            ant_sudoku.fill_position_with_only_one_posible_digit
+
+            ant_sudoku.update_places
+            ant_sudoku.update_digit_amounts_in_positions
+          end
+
+          @sudoku = ant_sudoku
           can_select = false
         end
       end
