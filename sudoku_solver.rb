@@ -20,6 +20,9 @@ class SudokuSolver
           ant_sudoku.update_selected
           ant_sudoku.update_places
           ant_sudoku.add_digits_with_only_one_posible_position
+          ant_sudoku.update_digit_amounts_in_positions
+          ant_sudoku.fill_position_with_only_one_posible_digit
+          require 'pry'; binding.pry
 
           can_select = false
         end

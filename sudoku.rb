@@ -3,6 +3,7 @@ require_relative 'file_reader'
 class Sudoku
   attr_reader :initial, :size,
               :places, :b, :digit_row, :digit_column,
+              :digits, :digit_to_add,
               :selected
 
   def self.from_file(file_name)
@@ -16,7 +17,40 @@ class Sudoku
     @digit_row = Array.new(9) { Hash.new(false) }
     @digit_column = Array.new(9) { Hash.new(false) }
     @places = Array.new(9) { Array.new(9) { Hash.new } }
+    @digits = Array.new(9) { Array.new(9, 0) }
+    @digit_to_add = Array.new(9) { Array.new(9) }
     @selected = 0
+  end
+
+  # Update how many digits can be entered
+  # in each position
+  def update_digit_amounts_in_positions
+    @size.times do |row|
+      @size.times do |col|
+        digits_amount = 0
+        digit_to_add = 0
+        (1..9).each do |digit|
+          if(@b[row][col].zero? && !@digit_row[row][digit] && !@digit_column[col][digit])
+            digits_amount += 1
+            digit_to_add = digit
+          end
+        end
+        @digits[row][col] = digits_amount
+        @digit_to_add[row][col] = digit_to_add if digits_amount == 1
+      end
+    end
+  end
+
+  # Update how many digits can be entered
+  # in each position
+  def fill_position_with_only_one_posible_digit
+    @size.times do |row|
+      @size.times do |col|
+        if @digits[row][col] == 1
+          add_digit(row, col, @digit_to_add[row][col])
+        end
+      end
+    end
   end
 
   def add_digits_with_only_one_posible_position
@@ -37,6 +71,9 @@ class Sudoku
 
   def add_digit(row, col, digit)
     # TODO check integrity
+    if(!@b[row][col].zero? || @digit_row[row][digit] || @digit_column[col][digit])
+      raise "Trying to insert a wrong number."
+    end
     @b[row][col] = digit
     @digit_row[row][digit] = true
     @digit_column[col][digit] = true
@@ -73,7 +110,7 @@ class Sudoku
     end
   end
 
-  # Update the numbers of places a digit can be entered 
+  # Update the numbers of places a digit can be entered
   # in each submatrix
   def update_places
     @size.times do |row|
@@ -118,7 +155,7 @@ class Sudoku
 
   def solved?
     rows_ok = b.all?{ |row| row.uniq.count == 9 }
-    cols = ant_sudoku.b.transpose
+    cols = b.transpose
     cols_ok = cols.all?{ |row| row.uniq.count == 9 }
 
     rows_ok && cols_ok
@@ -160,7 +197,7 @@ class Sudoku
       str << "\n"
       str << "-" * 21 + "\n" if row == 2 || row == 5
     end
-    
+
     puts str
   end
 end
