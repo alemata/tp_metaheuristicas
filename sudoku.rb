@@ -91,7 +91,6 @@ class Sudoku
       puts "row: #{row}, col: #{col}, digit:#{digit}"
       raise "Trying to insert a wrong number."
     end
-    puts "inserted => row: #{row}, col: #{col}, digit: #{digit}"
     @b[row][col] = digit
     @digit_row[row][digit] = true
     @digit_column[col][digit] = true
@@ -254,6 +253,8 @@ class Sudoku
       str << "\n"
       str << "-" * 21 + "\n" if row == 2 || row == 5
     end
+    str << "\n"
+    str << "Selected: #{@selected}"
 
     puts str
   end
