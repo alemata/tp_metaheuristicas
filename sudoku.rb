@@ -59,7 +59,9 @@ class Sudoku
     @size.times do |row|
       @size.times do |col|
         if @digits[row][col] == 1
-          add_digit(row, col, @digit_to_add[row][col])
+          if(can_add_digit(row, col, @digit_to_add[row][col]))
+            add_digit(row, col, @digit_to_add[row][col])
+          end
         end
       end
     end
@@ -74,7 +76,9 @@ class Sudoku
             place_to_add = get_place_to_add(row, col, digit)
             add_row = place_to_add[:row]
             add_col = place_to_add[:col]
-            add_digit(add_row, add_col, digit)
+            if(can_add_digit(add_row, add_col, digit))
+              add_digit(add_row, add_col, digit)
+            end
           end
         end
       end
@@ -82,15 +86,22 @@ class Sudoku
   end
 
   def add_digit(row, col, digit)
-    # TODO check integrity
-    if(!@b[row][col].zero? || @digit_row[row][digit] || @digit_column[col][digit])
+    if(!can_add_digit(row, col, digit))
+      puts self
+      puts "row: #{row}, col: #{col}, digit:#{digit}"
       raise "Trying to insert a wrong number."
     end
+    puts "inserted => row: #{row}, col: #{col}, digit: #{digit}"
     @b[row][col] = digit
     @digit_row[row][digit] = true
     @digit_column[col][digit] = true
     @selected += 1
     update_places
+  end
+
+  def can_add_digit(row, col, digit)
+    (@b[row][col].zero? && !@digit_row[row][digit] &&
+     !@digit_column[col][digit] && !included_in_submatrix(row, col, digit))
   end
 
   def get_place_to_add(row, col, digit)
@@ -140,7 +151,7 @@ class Sudoku
     res = 0
     start_row = (row / 3) * 3;
     start_col = (col / 3) * 3;
-    if(!included_in_submatrix(start_row, start_col, digit))
+    if(!included_in_submatrix(row, col, digit))
       (start_row..start_row + 2).each do |r|
         (start_col..start_col + 2).each do |c|
           if(@b[r][c].zero? && !@digit_row[r][digit] && !@digit_column[c][digit])
@@ -153,8 +164,12 @@ class Sudoku
     res
   end
 
+
   # Check if a digit is included in a submatix
-  def included_in_submatrix(start_row, start_col, digit)
+  def included_in_submatrix(row, col, digit)
+    start_row = (row / 3) * 3;
+    start_col = (col / 3) * 3;
+
     res = false;
     (start_row..start_row + 2).each do |row|
       (start_col..start_col + 2).each do |col|
@@ -163,6 +178,36 @@ class Sudoku
     end
 
     res
+  end
+
+  def get_next_to_fill(p_array, p_matrix)
+    can_be_added = []
+    9.times do |row|
+      9.times do |col|
+        (1..9).each do |digit|
+          if (can_add_digit(row, col, digit))
+            can_be_added << {row: row, col: col, digit: digit, p: p_matrix[row][col][digit]}
+          end
+        end
+      end
+    end
+    sorted = can_be_added.sort_by{|can_be_add| can_be_add[:p]}.reverse
+    percent = sorted.count * 20 / 100
+    to_add = sorted[0..percent].sample
+  end
+
+  def can_be_added
+    can_be_added = []
+    9.times do |row|
+      9.times do |col|
+        (1..9).each do |digit|
+          if (can_add_digit(row, col, digit))
+            can_be_added << {row: row, col: col, digit: digit}
+          end
+        end
+      end
+    end
+    can_be_added
   end
 
   def solved?
