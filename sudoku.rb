@@ -38,48 +38,42 @@ class Sudoku
   # Update how many digits can be entered
   # in each position
   def update_digit_amounts_in_positions
-    SIZE.times do |row|
-      SIZE.times do |col|
-        digits_amount = 0
-        digit_to_add = 0
-        (1..SIZE).each do |digit|
-          if(@b[row][col].zero? && !@digit_row[row][digit] && !@digit_column[col][digit])
-            digits_amount += 1
-            digit_to_add = digit
-          end
+    each_row_col_index do |row, col|
+      digits_amount = 0
+      digit_to_add = 0
+      (1..SIZE).each do |digit|
+        if(@b[row][col].zero? && !@digit_row[row][digit] && !@digit_column[col][digit])
+          digits_amount += 1
+          digit_to_add = digit
         end
-        @digits[row][col] = digits_amount
-        @digit_to_add[row][col] = digit_to_add if digits_amount == 1
       end
+      @digits[row][col] = digits_amount
+      @digit_to_add[row][col] = digit_to_add if digits_amount == 1
     end
   end
 
   # Update how many digits can be entered
   # in each position
   def fill_position_with_only_one_posible_digit
-    SIZE.times do |row|
-      SIZE.times do |col|
-        if @digits[row][col] == 1
-          if(can_add_digit(row, col, @digit_to_add[row][col]))
-            add_digit(row, col, @digit_to_add[row][col])
-          end
+    each_row_col_index do |row, col|
+      if @digits[row][col] == 1
+        if(can_add_digit(row, col, @digit_to_add[row][col]))
+          add_digit(row, col, @digit_to_add[row][col])
         end
       end
     end
   end
 
   def add_digits_with_only_one_posible_position
-    SIZE.times do |row|
-      SIZE.times do |col|
-        (1..SIZE).each do |digit|
-          positions = @places[row][col][digit]
-          if (positions == 1)
-            place_to_add = get_place_to_add(row, col, digit)
-            add_row = place_to_add[:row]
-            add_col = place_to_add[:col]
-            if(can_add_digit(add_row, add_col, digit))
-              add_digit(add_row, add_col, digit)
-            end
+    each_row_col_index do |row, col|
+      (1..SIZE).each do |digit|
+        positions = @places[row][col][digit]
+        if (positions == 1)
+          place_to_add = get_place_to_add(row, col, digit)
+          add_row = place_to_add[:row]
+          add_col = place_to_add[:col]
+          if(can_add_digit(add_row, add_col, digit))
+            add_digit(add_row, add_col, digit)
           end
         end
       end
@@ -121,14 +115,12 @@ class Sudoku
 
   # Hanlde already selected
   def update_selected
-    SIZE.times do |row|
-      SIZE.times do |col|
-        digit = @b[row][col]
-        if !digit.zero?
-          @digit_row[row][digit] = true
-          @digit_column[col][digit] = true
-          @selected += 1
-        end
+    each_row_col_index do |row, col|
+      digit = @b[row][col]
+      if !digit.zero?
+        @digit_row[row][digit] = true
+        @digit_column[col][digit] = true
+        @selected += 1
       end
     end
   end
@@ -136,11 +128,17 @@ class Sudoku
   # Update the numbers of places a digit can be entered
   # in each submatrix
   def update_places
+    each_row_col_index do |row, col|
+      (1..SIZE).each do |digit|
+        @places[row][col][digit] = calculate_places(row, col, digit)
+      end
+    end
+  end
+
+  def each_row_col_index
     SIZE.times do |row|
       SIZE.times do |col|
-        (1..SIZE).each do |digit|
-          @places[row][col][digit] = calculate_places(row, col, digit)
-        end
+        yield(row, col)
       end
     end
   end
@@ -182,12 +180,10 @@ class Sudoku
 
   def get_next_to_fill(p_array, p_matrix)
     can_be_added = []
-    SIZE.times do |row|
-      SIZE.times do |col|
-        (1..SIZE).each do |digit|
-          if (can_add_digit(row, col, digit))
-            can_be_added << {row: row, col: col, digit: digit, p: p_matrix[row][col][digit]}
-          end
+    each_row_col_index do |row, col|
+      (1..SIZE).each do |digit|
+        if (can_add_digit(row, col, digit))
+          can_be_added << {row: row, col: col, digit: digit, p: p_matrix[row][col][digit]}
         end
       end
     end
@@ -198,12 +194,10 @@ class Sudoku
 
   def can_be_added
     can_be_added = []
-    SIZE.times do |row|
-      SIZE.times do |col|
-        (1..SIZE).each do |digit|
-          if (can_add_digit(row, col, digit))
-            can_be_added << {row: row, col: col, digit: digit}
-          end
+    each_row_col_index do |row, col|
+      (1..SIZE).each do |digit|
+        if (can_add_digit(row, col, digit))
+          can_be_added << {row: row, col: col, digit: digit}
         end
       end
     end
