@@ -1,9 +1,11 @@
 require_relative 'sudoku'
 
 class SudokuSolver
+
+  SIZE = 9
+
   def initialize(sudoku)
     @sudoku = sudoku
-    @size = sudoku.size
     @ants = 5
     @cycles = 20
   end
@@ -12,9 +14,9 @@ class SudokuSolver
     g_max_selected = 0
     final_sudoku = nil
     evaporation = 0.99
-    t = Array.new(9) { Array.new(9) { Hash.new(1000) } }
-    p = Array.new(9) { Array.new(9) { Hash.new } }
-    w = Array.new(9) { Array.new(9) { Hash.new } }
+    t = Array.new(SIZE) { Array.new(SIZE) { Hash.new(1000) } }
+    p = Array.new(SIZE) { Array.new(SIZE) { Hash.new } }
+    w = Array.new(SIZE) { Array.new(SIZE) { Hash.new } }
     @cycles.times do |cycle|
       puts "cycle: #{cycle}"
       max_selected = 0
@@ -40,9 +42,9 @@ class SudokuSolver
 
           #Update tmp variables to calculate probability
           sumw = 0
-          9.times do |row|
-            9.times do |col|
-              (1..9).each do |digit|
+          SIZE.times do |row|
+            SIZE.times do |col|
+              (1..SIZE).each do |digit|
                 # Si places[row][col][digit] no tendria que dar 0 la probabilidad?
                 nij = (10 - ant_sudoku.places[row][col][digit]) * (10 - ant_sudoku.digits[row][col])
                 w[row][col][digit] = t[row][col][digit] * nij
@@ -53,9 +55,9 @@ class SudokuSolver
 
           #Update probability
           p_array = []
-          9.times do |row|
-            9.times do |col|
-              (1..9).each do |digit|
+          SIZE.times do |row|
+            SIZE.times do |col|
+              (1..SIZE).each do |digit|
                 probability = w[row][col][digit].to_f / sumw
                 p[row][col][digit] = probability
                 p_array << probability
@@ -70,7 +72,6 @@ class SudokuSolver
 
           can_select = ant_sudoku.selected < 81
           can_select = can_select && !(ant_sudoku.can_be_added.size.zero?)
-          puts can_select
         end
 
         # End of ant
@@ -84,18 +85,18 @@ class SudokuSolver
       end
 
       # End of all ants
-      9.times do |row|
-        9.times do |col|
-          (1..9).each do |digit|
+      SIZE.times do |row|
+        SIZE.times do |col|
+          (1..SIZE).each do |digit|
             t[row][col][digit] *= evaporation
           end
         end
       end
 
       dt = max_selected / 81.0;
-      9.times do |row|
-        9.times do |col|
-          (1..9).each do |digit|
+      SIZE.times do |row|
+        SIZE.times do |col|
+          (1..SIZE).each do |digit|
             used_digit = max_sudoku.b[row][col]
             if (used_digit != 0)
               t[row][col][digit] += dt;

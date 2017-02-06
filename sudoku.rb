@@ -6,13 +6,14 @@ class Sudoku
               :digits, :digit_to_add,
               :selected
 
+  SIZE = 9
+
   def self.from_file(file_name)
     FileReader.from_file(file_name)
   end
 
   def initialize(initial)
     @initial = initial
-    @size = 9
     @b = Marshal.load(Marshal.dump(initial))
     @digit_row = Array.new(9) { Hash.new(false) }
     @digit_column = Array.new(9) { Hash.new(false) }
@@ -37,11 +38,11 @@ class Sudoku
   # Update how many digits can be entered
   # in each position
   def update_digit_amounts_in_positions
-    @size.times do |row|
-      @size.times do |col|
+    SIZE.times do |row|
+      SIZE.times do |col|
         digits_amount = 0
         digit_to_add = 0
-        (1..9).each do |digit|
+        (1..SIZE).each do |digit|
           if(@b[row][col].zero? && !@digit_row[row][digit] && !@digit_column[col][digit])
             digits_amount += 1
             digit_to_add = digit
@@ -56,8 +57,8 @@ class Sudoku
   # Update how many digits can be entered
   # in each position
   def fill_position_with_only_one_posible_digit
-    @size.times do |row|
-      @size.times do |col|
+    SIZE.times do |row|
+      SIZE.times do |col|
         if @digits[row][col] == 1
           if(can_add_digit(row, col, @digit_to_add[row][col]))
             add_digit(row, col, @digit_to_add[row][col])
@@ -68,9 +69,9 @@ class Sudoku
   end
 
   def add_digits_with_only_one_posible_position
-    @size.times do |row|
-      @size.times do |col|
-        (1..9).each do |digit|
+    SIZE.times do |row|
+      SIZE.times do |col|
+        (1..SIZE).each do |digit|
           positions = @places[row][col][digit]
           if (positions == 1)
             place_to_add = get_place_to_add(row, col, digit)
@@ -120,8 +121,8 @@ class Sudoku
 
   # Hanlde already selected
   def update_selected
-    @size.times do |row|
-      @size.times do |col|
+    SIZE.times do |row|
+      SIZE.times do |col|
         digit = @b[row][col]
         if !digit.zero?
           @digit_row[row][digit] = true
@@ -135,9 +136,9 @@ class Sudoku
   # Update the numbers of places a digit can be entered
   # in each submatrix
   def update_places
-    @size.times do |row|
-      @size.times do |col|
-        (1..9).each do |digit|
+    SIZE.times do |row|
+      SIZE.times do |col|
+        (1..SIZE).each do |digit|
           @places[row][col][digit] = calculate_places(row, col, digit)
         end
       end
@@ -181,9 +182,9 @@ class Sudoku
 
   def get_next_to_fill(p_array, p_matrix)
     can_be_added = []
-    9.times do |row|
-      9.times do |col|
-        (1..9).each do |digit|
+    SIZE.times do |row|
+      SIZE.times do |col|
+        (1..SIZE).each do |digit|
           if (can_add_digit(row, col, digit))
             can_be_added << {row: row, col: col, digit: digit, p: p_matrix[row][col][digit]}
           end
@@ -197,9 +198,9 @@ class Sudoku
 
   def can_be_added
     can_be_added = []
-    9.times do |row|
-      9.times do |col|
-        (1..9).each do |digit|
+    SIZE.times do |row|
+      SIZE.times do |col|
+        (1..SIZE).each do |digit|
           if (can_add_digit(row, col, digit))
             can_be_added << {row: row, col: col, digit: digit}
           end
@@ -210,9 +211,9 @@ class Sudoku
   end
 
   def solved?
-    rows_ok = b.all?{ |row| row.uniq.count == 9 }
+    rows_ok = b.all?{ |row| row.uniq.count == SIZE }
     cols = b.transpose
-    cols_ok = cols.all?{ |row| row.uniq.count == 9 }
+    cols_ok = cols.all?{ |row| row.uniq.count == SIZE }
 
     rows_ok && cols_ok
   end
@@ -235,8 +236,8 @@ class Sudoku
 
   def to_s
     str = ""
-    @size.times do |row|
-      @size.times do |col|
+    SIZE.times do |row|
+      SIZE.times do |col|
         str << "#{@initial[row][col]} "
         str << "| " if col == 2 || col == 5
       end
@@ -245,8 +246,8 @@ class Sudoku
     end
     str << "\n"
     str << "Result \n"
-    @size.times do |row|
-      @size.times do |col|
+    SIZE.times do |row|
+      SIZE.times do |col|
         str << "#{@b[row][col]} "
         str << "| " if col == 2 || col == 5
       end
