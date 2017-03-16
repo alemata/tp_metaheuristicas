@@ -45,18 +45,16 @@ class SudokuSolver
           end
 
           #Update probability
-          p_array = []
           SIZE.times do |row|
             SIZE.times do |col|
               (1..SIZE).each do |digit|
                 probability = w[row][col][digit].to_f / sumw
                 p[row][col][digit] = probability
-                p_array << probability
               end
             end
           end
 
-          next_to_fill = ant_sudoku.get_next_to_fill(p_array, p)
+          next_to_fill = ant_sudoku.get_next_to_fill(p)
           if next_to_fill
             ant_sudoku.add_digit(next_to_fill[:row], next_to_fill[:col], next_to_fill[:digit])
           end
@@ -87,11 +85,9 @@ class SudokuSolver
       dt = max_selected / 81.0;
       SIZE.times do |row|
         SIZE.times do |col|
-          (1..SIZE).each do |digit|
-            used_digit = max_sudoku.b[row][col]
-            if (used_digit != 0)
-              t[row][col][digit] += dt;
-            end
+          used_digit = max_sudoku.b[row][col]
+          if (used_digit != 0)
+            t[row][col][used_digit] += dt;
           end
         end
       end
