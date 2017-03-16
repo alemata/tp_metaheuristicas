@@ -23,6 +23,19 @@ class Sudoku
     @selected = 0
   end
 
+  def add_all_possible_initial_values
+    counter = 0 # Have an issue here that sometimes is't stuck
+    while can_put_any_number? && counter < 729
+      add_digits_with_only_one_posible_position
+      update_digit_amounts_in_positions
+      fill_position_with_only_one_posible_digit
+
+      update_places
+      update_digit_amounts_in_positions
+      counter += 1
+    end
+  end
+
   def can_put_any_number?
     digit_in_one_position = @places.any? do |row|
       row.any? do

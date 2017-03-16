@@ -5,15 +5,51 @@ require_relative 'sudoku_solver'
 if ARGV.empty?
   puts "Usage: "
   puts "\t./solver file_path"
+  puts "\t./solver dir_or_file [cycles] [ants] [evaporation]"
 
   exit 0
 end
 
-file_name = ARGV.shift
+dir_or_file = ARGV.shift
+$cycles = ARGV.shift.to_i || 20
+$ants = ARGV.shift.to_i || 4
+$evaporation = ARGV.shift.to_f || 0.99
 
-sudoku = Sudoku.from_file(file_name)
+def resolve_dir(dir)
+  Dir.foreach(dir) do |item|
+    next if item == '.' || item == '..' || item.start_with?('.')
 
-solver = SudokuSolver.new(sudoku)
-solution = solver.solve
+    file_name = "#{dir}/#{item}"
+    sudoku = Sudoku.from_file(file_name)
 
-puts solution
+    solver = SudokuSolver.new(sudoku, $cycles, $ants, $evaporation)
+    start = Time.now
+    solution = solver.solve
+    time = ((Time.now - start) * 1000).to_i
+
+    amount = solution.selected
+    line = [item, amount, time].join(',')
+    `echo #{line} >> solutions.csv`
+
+    puts "Solucion final para: -------| #{item} |-------"
+    puts solution
+    puts "----------------------------------------------"
+  end
+end
+
+if File.directory?(dir_or_file)
+  resolve_dir(dir_or_file)
+else
+  sudoku = Sudoku.from_file(dir_or_file)
+
+  solver = SudokuSolver.new(sudoku, $cycles, $ants, $evaporation)
+  start = Time.now
+  solution = solver.solve
+  time = ((Time.now - start) * 1000).to_i
+
+  amount = solution.selected
+  line = [dir_or_file, amount, time].join(',')
+  `echo #{line} >> solutions.csv`
+
+  puts solution
+end

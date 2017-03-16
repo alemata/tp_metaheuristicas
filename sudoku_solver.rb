@@ -4,16 +4,16 @@ class SudokuSolver
 
   SIZE = 9
 
-  def initialize(sudoku)
+  def initialize(sudoku, cycles = 20, ants = 4, evaporation = 0.99)
     @sudoku = sudoku
-    @ants = 5
-    @cycles = 20
+    @cycles = cycles
+    @ants = ants
+    @evaporation = evaporation
   end
 
   def solve
     g_max_selected = 0
     final_sudoku = nil
-    evaporation = 0.99
     t = Array.new(SIZE) { Array.new(SIZE) { Hash.new(1000) } }
     p = Array.new(SIZE) { Array.new(SIZE) { Hash.new } }
     w = Array.new(SIZE) { Array.new(SIZE) { Hash.new } }
@@ -29,16 +29,7 @@ class SudokuSolver
         while can_select
           ant_sudoku.update_places
 
-          counter = 0 # Have an issue here that sometimes is't stuck
-          while ant_sudoku.can_put_any_number? && counter < 729
-            ant_sudoku.add_digits_with_only_one_posible_position
-            ant_sudoku.update_digit_amounts_in_positions
-            ant_sudoku.fill_position_with_only_one_posible_digit
-
-            ant_sudoku.update_places
-            ant_sudoku.update_digit_amounts_in_positions
-            counter += 1
-          end
+          ant_sudoku.add_all_possible_initial_values
 
           #Update tmp variables to calculate probability
           sumw = 0
@@ -88,7 +79,7 @@ class SudokuSolver
       SIZE.times do |row|
         SIZE.times do |col|
           (1..SIZE).each do |digit|
-            t[row][col][digit] *= evaporation
+            t[row][col][digit] *= @evaporation
           end
         end
       end
