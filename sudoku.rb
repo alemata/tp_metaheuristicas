@@ -191,7 +191,7 @@ class Sudoku
     res
   end
 
-  def get_next_to_fill(p_array, p_matrix)
+  def get_next_to_fill(p_matrix)
     can_be_added = []
     each_row_col_index do |row, col|
       (1..SIZE).each do |digit|
