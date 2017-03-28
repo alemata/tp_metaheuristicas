@@ -37,6 +37,7 @@ class SudokuSolver
             SIZE.times do |col|
               (1..SIZE).each do |digit|
                 # Si places[row][col][digit] no tendria que dar 0 la probabilidad?
+                # nij = ant_sudoku.places[row][col][digit] == 0 ? 0 : (10 - ant_sudoku.places[row][col][digit]) * (10 - ant_sudoku.digits[row][col])
                 nij = (10 - ant_sudoku.places[row][col][digit]) * (10 - ant_sudoku.digits[row][col])
                 w[row][col][digit] = t[row][col][digit] * nij
                 sumw += w[row][col][digit]
