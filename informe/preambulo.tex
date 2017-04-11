@@ -1,0 +1,85 @@
+\usepackage[activeacute]{babel}
+\usepackage{fancyhdr}
+\usepackage{ecarat}
+\usepackage{graphicx}
+%\usepackage{amssymb}
+\usepackage{amssymb,amsmath}
+%\usepackage[all]{xy}
+\usepackage{graphicx}
+\usepackage{listings}
+%\usepackage{pseudocode}
+\usepackage[utf8]{inputenc}
+%\usepackage{wrapfig}
+\usepackage{lastpage}
+\usepackage{multicol}
+\usepackage{url}
+\usepackage{color}
+\usepackage{array}
+\usepackage{url}
+\usepackage{listings}
+\usepackage{sverb}
+
+\graphicspath{
+	{./imgs/}
+}
+
+\usepackage{xifthen}
+\usepackage{dashrule}
+
+\oddsidemargin 0in
+\textwidth 6.5in
+\topmargin 0in
+\addtolength{\topmargin}{-.4in}
+\addtolength{\leftmargin}{-.5in}
+\textheight 10in
+\parskip=1ex
+\pagestyle{fancy}
+\newcommand{\real}{\hbox{\bf R}}
+\newcommand{\prima}{^{\prime}}
+\newcommand{\tab}{\hspace*{1cm}}
+%Cosas que se usan en el enunciado
+% \parindent = 0 pt
+% \parskip = 11 pt
+
+\usepackage{a4wide}
+\newcommand{\erf}{\hbox{erf}}
+\newcommand\abs[1]{\ensuremath{\left| {#1} \right|}}
+%~ \addtolength{\textheight}{1cm}
+
+\lstdefinelanguage{Smalltalk}{ 
+	morekeywords={true,false,self,super,nil}, 
+	sensitive=true, 
+	morecomment=[s]{"}{"}, 
+	morestring=[d]', 
+	style=SmalltalkStyle 
+} 
+\lstdefinestyle{SmalltalkStyle}{ 
+	literate={:=}{{$\gets$}}1{^}{{$\uparrow$}}1 
+} 
+\lstset {%
+     language=Smalltalk,
+     frame=l,
+     framerule=1pt,
+     aboveskip=1em,
+     framextopmargin=3pt,
+     framexbottommargin=3pt,
+     framexleftmargin=0.4cm,
+     framesep=0pt,
+     rulesep=.4pt,
+     %~ backgroundcolor=\color{gris95},
+     rulesepcolor=\color{red},
+     tabsize=4,
+     %
+     stringstyle=\sffamily,
+     showstringspaces = false,
+     basicstyle=\footnotesize\sffamily,
+     identifierstyle=,
+     commentstyle=\em, %\sffamily\color{gris50},
+     keywordstyle=\bfseries,
+     commentstyle=\scriptsize\sffamily,
+     breaklines=true,
+     breakatwhitespace=true,
+     morekeywords={setof},
+   }
+
+\usepackage{longtable}

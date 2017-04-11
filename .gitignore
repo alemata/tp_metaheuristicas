@@ -1,0 +1,17 @@
+/solutions/*
+
+*.aux
+
+*.bbl
+
+*.blg
+
+*.log
+
+*.out
+
+*.gz
+
+*.toc
+
+*.texnicle
