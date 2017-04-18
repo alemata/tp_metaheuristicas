@@ -29,7 +29,8 @@ def resolve_dir(dir)
 
     amount = solution.selected
     line = [item, amount, time].join(',')
-    `echo #{line} >> solutions.csv`
+    base_name = File.basename(dir_or_file, ".*")
+    `echo #{line} >> #{base_name}-#{$cycles}_#{$ants}_#{$evaporation}.csv`
 
     puts "Solucion final para: -------| #{item} |-------"
     puts solution
@@ -40,16 +41,25 @@ end
 if File.directory?(dir_or_file)
   resolve_dir(dir_or_file)
 else
-  sudoku = Sudoku.from_file(dir_or_file)
+  base_name = File.basename(dir_or_file, ".*")
+  sum = 0
+  runs = 5
+  runs.times do |run|
+    puts "starting run n: #{run}"
+    sudoku = Sudoku.from_file(dir_or_file)
+    solver = SudokuSolver.new(sudoku, $cycles, $ants, $evaporation)
+    start = Time.now
+    solution = solver.solve
+    time = ((Time.now - start) * 1000).to_i
+    sum += time
 
-  solver = SudokuSolver.new(sudoku, $cycles, $ants, $evaporation)
-  start = Time.now
-  solution = solver.solve
-  time = ((Time.now - start) * 1000).to_i
+    amount = solution.selected
+    line = [dir_or_file, amount, time].join(',')
+    `echo #{line} >> #{base_name}-#{$cycles}_#{$ants}_#{$evaporation}.csv`
 
-  amount = solution.selected
-  line = [dir_or_file, amount, time].join(',')
-  `echo #{line} >> solutions.csv`
+    puts solution
+  end
+  prom = (sum / runs.to_f).round(2)
+  `echo ,,#{prom} >> #{base_name}-#{$cycles}_#{$ants}_#{$evaporation}.csv`
 
-  puts solution
 end

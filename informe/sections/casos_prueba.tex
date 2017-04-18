@@ -1,0 +1,56 @@
+\section{Casos de prueba}
+\label{sec:intro}
+
+Para evaluar el comportamiento y fijar los parametros del algoritmo utilizamos los casos de prueba obtenidos de
+\url{http://lipas.uwasa.fi/~timan/sudoku/}, los cuales estan ordenados en cuantro categorías: \textit{fácil, medio, difícil y ultra difícil}.
+
+Nuestra heuristica logro encontrar el resultado en todos los casos de prueba en 
+un tiempo inferior a los 5 minutos. En las categorias  \textit{fácil y medio} no 
+se llegaba a la primer iteracion del mismo.
+
+Esto significaba que el algoritmo estaba encontrando la solucion sin compartir 
+la informacion entra las hormigas. 
+
+Por lo tanto para fijar los parametros decidimos utilizar los casos de mayor dificultad. 
+
+En un primer momento queriamos evaluar cuantos ciclos y cuantas hormigas debiamos utilizar. 
+Para esto dejamos fijo el número de ciclos y fuimos variando la cantidad de hormigas. 
+Este primer resultado nos llamo la atención, ya que al incremetar el numero de hormigas, no se modificaba el tiempo 
+promedio utilizado para encontrar la respuesta asi como tampoco la cantidad de 
+ciclos generales usados para encontrar la solucion.
+
+
+
+Una segunda prueba fue variar el factor de evaporación, pensando que a mayor nivel de evaporación, 
+menor la incidencia de las hormigas en el algoritmo y por lo tanto mayor seria el tiempo, o inclusive que no 
+encontraria la solución.
+Lo que hicimos fue setear el factor de evaporación en $0.8$ pensando que se 
+degradaria la performance de nuestro algoritmo. Pero nuevamente nos encontramos 
+con que el algoritmo no se vio afectado.
+
+
+Con estos resultados, la prueba que hicimos fue eliminar directamente el uso de 
+la feronoma del algoritmo, por lo tanto las hormigas no compartirian 
+informacion. 
+
+
+Sorprendentemente, el algoritmo no se vio afectado por estos cambios. Siempre 
+encontro la solucion y en tiempos promedios similares.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
