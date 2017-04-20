@@ -5,5 +5,38 @@ En nuestro trabajo implementamos una metaheurística de poblacion (Colonia de Ho
 por lo tanto describiremos brevemente como podriamos implementar una técnica 
 simple. 
 
+En este caso elejimos la metaheristica $GRASP$ (Greedy Randomized Adaptive Search 
+Procedure). Consiste en ir generando soluciones iniciales con un método voraz 
+randomizado, tratar de mejorar las mismas haciendo una busqueda local e ir 
+actualizando la mejor solucion. El pseudo-código general seria el siguiente:
+
+\begin{Verbatim}[samepage=true]
+main {
+  Mientras no se verifica criterio de parada {
+      solución = ConstruirSoluciónVoráz()
+      mejorLocal = BusquedaLoca(solución)
+      mejorSolución = CompararSoluciones(mejorLocal, mejorSolución)
+  }
+  devolver mejorSolución
+}
+\end{Verbatim}
+
+Por lo tanto bastaria con definir como generamos las soluciones iniciales, y 
+cual es la vecindad de una solución para realizar la busqueda local. 
+
+Para generar las soluciones iniciales la idea es ir agregando digitos al azar, 
+en los casilleros en los cuales haya menos posibiliades (posibles digitos a agregar dadas las restricciones del sudoku). 
+Por ejemplo si en un casillero solo tenemos 2 digitos, elegimos alguno de ellos al azar. Asi vamos completando
+hasta que no podamos agregar mas digitos. De esta manera, estamos generando 
+soluciones random.
 
 
+Una vez que obtenemos una solución debemos definir cual es su vecindad para poder ejecutar la busqueda local
+sobre la misma. Una posible vecindad seria eliminar los digitos de las filas y columnas que no hayan sido totalmente
+llenadas por el algoritmo (menos los digitos iniciales), y volver a llenarlos 
+repitiendo los pasos del algoritmo inicial. 
+Podemos estar seguros de que al menos una fila y/o columna no 
+estará llena, debido a que si eso ocurre, es porque ya encontrarmos la mejor solucion posible.
+
+
+\newpage
